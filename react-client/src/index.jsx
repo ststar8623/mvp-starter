@@ -16,6 +16,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    this.updateArtist();
+  }
+
+  updateArtist() {
     $.ajax({
       url: '/database', 
       method: 'GET',
@@ -23,9 +27,10 @@ class App extends React.Component {
         artist: this.state.artist
       },
       success: (data) => {
-        console.log('dataaaaaa', data[0].albums);
+        console.log('dataaaaaa', data);
         this.setState({
-          albums: data[0].albums
+          albums: data[0].artist.albums,
+          artist: data[0].artist.name
         })
       },
       error: (err) => {
@@ -38,6 +43,7 @@ class App extends React.Component {
     this.setState({
       artist: e
     });
+    this.updateArtist();
     this.search(e);
   }
 
