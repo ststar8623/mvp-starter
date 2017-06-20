@@ -12,18 +12,16 @@ db.once('open', function() {
 });
 
 var artistSchema = mongoose.Schema({
-  artist: {
-    name: {
-      type: String,
-      unique: true
-    },
-    albums: [
-      {
-        song: String,
-        url: String
-      }
-    ]
-  }
+  name: {
+    type: String,
+    unique: true
+  },
+  albums: [
+    {
+      song: String,
+      url: String
+    }
+  ]
 });
 
 var dbs = mongoose.model('artist', artistSchema);

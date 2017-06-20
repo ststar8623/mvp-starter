@@ -52,7 +52,7 @@ class App extends React.Component {
   
   render () {
     return (<div>
-      <h1>Item List</h1>
+      <h1>Your Favorite Songs</h1>
       <Search handleChange={this.handleChange} />
       <List />
     </div>)

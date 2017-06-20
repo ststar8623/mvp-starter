@@ -16,11 +16,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 // app.use(express.static(__dirname + '/../angular-client'));
 // app.use(express.static(__dirname + '/../node_modules'));
 app.post('/search', function(req, res) {
-  let artists = req.body.artist.split(' ').join('+');
-  console.log('artist name: ', artists);
-  let token = 'BQD_dQH-UC1xw194PE9tgrz6KI-9Yk1EnU14boSw5qXs2Psqvl9PvqCYDM_9Y1ytkm-KVpy0hp7QWzMhGCVXTdD2JbuQ4SqcWGHCR63WpC8SKVCEm2L6ZFbybT5kBxNaQUXxiwoZanDZpFm6QuBDbVblIHkhQZkgeO5jfkyW2PpF1F65MSO_zaQ';
+  let artistName = req.body.artist;
+  let spArtist = artistName.split(' ').join('+');
+  let token = 'BQA_FUa4lYxhzs5t7OIEOwZHItukGN9CqcR5bK8mxNCWUlXpR7ZSMZMbzuo4Oz2cEtI5Da_zbCXPPdqLLVFGD9KcjlNrtJyKJE8V8L7VqEoHLPTSjQuvRwbUqSAO-o5eZpZu2JNJQECFUJR_sNcE98d4IXJV6X-AkKrrmDxBC_fA0ORWgr1M9ic';
   let url = 'https://api.spotify.com/v1/search?q=';
-  let query = url + artists + '&type=track&limit=1';
+  let query = url + spArtist + '&type=track&limit=10';
   let options = {
     url: query,
     headers: {
@@ -28,10 +28,20 @@ app.post('/search', function(req, res) {
     }
   };
   request(options).then(res => {
-    let result = res.body;
+    let result = JSON.parse(res.body);
     let artist = new dbs();
 
-    artist.name = artists;
+    artist.name = artistName;
+    result.tracks.items.map(album => {
+      artist.albums.push({song: album.name, url: album.href})
+    });
+    artist.save((err, res) => {
+      if (err) {
+        console.log(`Sorry either ${artistName} is incorrect or ${artistName} already exists in the database`);
+      } else {
+        console.log(`${artistName} successfully saved to database`);
+      }
+    });
     console.log(artist);
   })
 
