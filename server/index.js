@@ -19,19 +19,25 @@ app.get('/search', function(req, res) {
   let artistName = req.url.substring(15).replace('%20', ' ').toLowerCase();
   let obj = {'artist.name': artistName}
 
-  dbs.find(obj, function(err, data) {
-    if (err) {
-      res.sendStatus(500);
+  let dbSearch = new Promise((resolve, reject) => {
+    dbs.find(obj, function(err, data) {
+      if (err) {
+        reject(err);
+      } else {
+        console.log(data);
+        return resolve(data);
+      }
+    });
+  });
+  
+  dbSearch.then(result => {
+    if (result.length === 0) {
+      spot.spotify(artistName, res);
     } else {
-      res.json(data);
+      res.json(result);
     }
-    spot.spotify(artistName);
   });
 
-});
-
-app.listen(3000, function() {
-  console.log('listening on port 3000!');
 });
 
 app.get('/database', function(req, res) {
@@ -49,4 +55,20 @@ app.get('/database', function(req, res) {
       res.json(data);
     }
   });
-})
+});
+
+app.post('/remove', function(req, res) {
+  let artistName = req.body.artist;
+  dbs.remove({'artist.name':artistName}, function(err, data) {
+    if (err) {
+      res.sendStatus(500);
+    } else {
+      res.send('Artist has been removed from the database');
+    }
+  });
+});
+
+
+app.listen(3000, function() {
+  console.log('listening on port 3000!');
+});

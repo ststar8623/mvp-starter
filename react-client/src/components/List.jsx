@@ -4,7 +4,8 @@ const List = (props) => (
   <div>
     {
       props.artists.map(artist => {
-        return <h4 key={artist}><a href="" onClick={props.updateChange}>{artist}</a><input type="button" value="delete"></input></h4>
+        let removeChange = props.removeChange.bind(this, artist);
+        return <h4 key={artist}><a href="" onClick={props.updateChange}>{artist}</a><input type="button" value="delete" onClick={removeChange}></input></h4>
       })
     }
     <ul>

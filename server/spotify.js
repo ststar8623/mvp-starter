@@ -2,11 +2,11 @@ var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
 var dbs = require('../database');
 
-var spotify = function(name) {
+var spotify = function(name ,response) {
   // sportify API search starts here
   let artistName = name;
   let spArtist = artistName.split(' ').join('+');
-  let token = 'BQBvWKyu7r-i6lJuOZgrIwbPbXWzMwmMfBWXHXtVNutGbIulxnqT886xXTwHCVRz3jklyeQQn6LFVViu7rQMkDk4jX206RSJ4K-9UKx0aSmfS1tS826r1BuP0Dm08Hzt-xVg2l-a-W9quyYxSYjF8gJlMvDywbiWmJNORGgR_B-D3kgyF11EKq964Y_qKa1tU4Ei79rsuTFvycd_gJLYPr7silKFE4xRMouxu1Hp5E9ZOAu76w_zqV9s2CBhoQUNRDYHlyEyLFo-tuELRp1upaZ-6fY';
+  let token = 'BQCEPVz7M_-rAVcTF8GzigUfDMOB90nWxmgHPyvsJ698STzL_W5dO0aBTyO7c--q1eKe_5LIObCY0pciz4sbBPWjb3gmjf5tOp9DGayEhh9CI39Unplb5MLg5QkJ1ampFnxZfxrWg9j3I65yccenkfQKQeNo0fIx9tGzVmRItEwLfHU-AHMnAwJ9hp_ztQlwO312kGZqREioBbrxSE8aTRLEVALpleuKeOuQpa83UQe4yQyEqZT9tESS7mOfoeejCNHaVDenrZmhmIKrHPCxxUhMBRs';
   let url = 'https://api.spotify.com/v1/search?q=';
   let query = url + spArtist + '&type=track&limit=10';
   let options = {
@@ -23,7 +23,7 @@ var spotify = function(name) {
     result.map(album => {
       artist.artist.albums.push({song: album.name, url: album.href, image:album.album.images[2].url})
     });
-   
+    console.log('ARTIST::::: ', artist);
     artist.save((err, res) => {
       if (err) {
         console.log(`Sorry either ${artistName} is incorrect or ${artistName} already exists in the database`, err);
@@ -31,7 +31,7 @@ var spotify = function(name) {
         console.log(`${artistName} successfully saved to database`);
       }
     });
-    console.log('artist is being saved --------->', artist, '<--------');
+    response.json(artist);
   })
 }
 

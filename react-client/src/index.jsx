@@ -15,6 +15,7 @@ class App extends React.Component {
     this.search = this.search.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.updateChange = this.updateChange.bind(this);
+    this.removeChange = this.removeChange.bind(this);
   }
 
   componentDidMount() {
@@ -24,11 +25,11 @@ class App extends React.Component {
       method: 'GET',
       success: (data) => {
         console.log(data);
-        let artists = this.state.artists;
+        let artists = that.state.artists;
         data.forEach(artist => {
           artists.push(artist.artist.name);
         });
-        this.setState({
+        that.setState({
           artists: artists
         });
       }
@@ -38,6 +39,26 @@ class App extends React.Component {
   handleChange(e) {
     this.setState({
       artist: e.target.value
+    });
+  }
+
+  removeChange(e) {
+    let that = this;
+    that.setState({
+      albums: [],
+      artists: that.state.artists.filter(el=> {
+        return el !== e;
+      })
+    });
+    $.ajax({
+      url: '/remove',
+      method: 'POST',
+      data: {
+        artist: e
+      },
+      success: function(data) {
+        console.log('successful remove artist from database');
+      }
     });
   }
 
@@ -54,7 +75,7 @@ class App extends React.Component {
         console.log("updateChange: ", data);
         that.setState({
           albums: data[0].artist.albums
-        })
+        });
       }
     })
   }
@@ -65,25 +86,28 @@ class App extends React.Component {
       url: '/search',
       method: 'GET',
       data: {
-        artist: this.state.artist
+        artist: that.state.artist
       },
       success: (data) => {
         console.log(' successful sent!!');
-        let newArtist = this.state.artists;
-        console.log(data);
-        console.log(data[0]);
-        console.log(data[0].artist);
-        if (newArtist.includes(data[0].artist.name)) {
+        console.log('searched back data: ', data.artist.name);
+        if (!that.state.artists.includes(data.artist.name)) {
+          let newArray = that.state.artists;
+          newArray.push(data.artist.name);
           that.setState({
-            albums: data[0].artist.ablums
-          });
-        } else {
-          newArtist.push(data[0].artist.name);
-          that.setState({
-            albums: data[0].artist.albums,
-            artists: newArtist
+            artists: newArray
           });
         }
+        // if (that.state.artists.includes(data.artist.name)) {
+        //   that.setState({
+        //     albums: data.artist.ablums
+        //   });
+        // } else {
+        //   that.setState({
+        //     albums: data.artist.albums,
+        //     artists: that.state.artists.push(data.artist.name)
+        //   });
+        // }
       },
       error: (err) => {
         console.log('err', err);
@@ -93,9 +117,9 @@ class App extends React.Component {
   
   render () {
     return (<div>
-      <h1>Your Favorite Songs</h1>
+      <h1>Your Favorite Artists</h1>
       <Search handleChange={this.handleChange} search={this.search} />
-      <List artists={this.state.artists} albums={this.state.albums} updateChange={this.updateChange}/>
+      <List artists={this.state.artists} albums={this.state.albums} updateChange={this.updateChange} removeChange={this.removeChange}/>
     </div>)
   }
 }
