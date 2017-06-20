@@ -27,14 +27,25 @@ var artistSchema = mongoose.Schema({
 var dbs = mongoose.model('artist', artistSchema);
 
 var selectAll = function(callback) {
-  dbs.find({}, function(err, items) {
+  dbs.find({}, function(err, artist) {
     if(err) {
       callback(err, null);
     } else {
-      callback(null, items);
+      callback(null, artist.albums);
     }
   });
 };
 
-module.exports.selectAll = selectAll;
+var selectOne = function(name, callback) {
+  dbs.find({name: name}, function(err, artist) {
+    if (err) {
+      callback(err, null);
+    } else {
+      callback(null, artist);
+    }
+  })
+}
+
+module.exports = selectAll;
+module.exports = selectOne;
 module.exports = dbs;

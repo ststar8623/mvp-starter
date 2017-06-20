@@ -4,8 +4,7 @@ var Promise = require('bluebird');
 var request = Promise.promisify(require('request'));
 // UNCOMMENT THE DATABASE YOU'D LIKE TO USE
 // var items = require('../database-mysql');
-var dbs = require('../database-mongo');
-
+var dbs = require('../database');
 var app = express();
 
 // UNCOMMENT FOR REACT
@@ -18,7 +17,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.post('/search', function(req, res) {
   let artistName = req.body.artist;
   let spArtist = artistName.split(' ').join('+');
-  let token = 'BQA_FUa4lYxhzs5t7OIEOwZHItukGN9CqcR5bK8mxNCWUlXpR7ZSMZMbzuo4Oz2cEtI5Da_zbCXPPdqLLVFGD9KcjlNrtJyKJE8V8L7VqEoHLPTSjQuvRwbUqSAO-o5eZpZu2JNJQECFUJR_sNcE98d4IXJV6X-AkKrrmDxBC_fA0ORWgr1M9ic';
+  let token = 'BQCf6rO2Aj304SDj2Urjr0C-L637UA0wdaDZnoeUuLNWHEN4v6itwBsyso1zqLDxSXB61q8_5lMUiih_BMlx4JgyyHJ0u_67TM0ROcZYRSUCdePlt2gnMQgkuGZr6SG98R4d1ZNBurmuixkKQ8mmlU9RsBqP6UcFjrPH7BQY_1ilYb7q3oQJaEc';
   let url = 'https://api.spotify.com/v1/search?q=';
   let query = url + spArtist + '&type=track&limit=10';
   let options = {
@@ -30,7 +29,7 @@ app.post('/search', function(req, res) {
   request(options).then(res => {
     let result = JSON.parse(res.body);
     let artist = new dbs();
-
+  
     artist.name = artistName;
     result.tracks.items.map(album => {
       artist.albums.push({song: album.name, url: album.href})
@@ -42,20 +41,21 @@ app.post('/search', function(req, res) {
         console.log(`${artistName} successfully saved to database`);
       }
     });
-    console.log(artist);
   })
 
 });
 
-// app.get('/items', function (req, res) {
-//   items.selectAll(function(err, data) {
-//     if(err) {
-//       res.sendStatus(500);
-//     } else {
-//       res.json(data);
-//     }
-//   });
-// });
+app.get('/database', function (req, res) {
+  let artist = req.url.substring(17);
+  console.log(artist);
+  dbs.find(artist ,function(err, data) {
+    if(err) {
+      res.sendStatus(500);
+    } else {
+      res.json(data);
+    }
+  });
+});
 
 app.listen(3000, function() {
   console.log('listening on port 3000!');

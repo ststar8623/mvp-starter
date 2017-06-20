@@ -8,7 +8,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      items: [],
+      albums: [],
       artist: ''
     };
     this.search = this.search.bind(this);
@@ -16,18 +16,22 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    // $.ajax({
-    //   url: '/items', 
-    //   method: 'GET',
-    //   success: (data) => {
-    //     this.setState({
-    //       items: data
-    //     })
-    //   },
-    //   error: (err) => {
-    //     console.log('err', err);
-    //   }
-    // });
+    $.ajax({
+      url: '/database', 
+      method: 'GET',
+      data: {
+        artist: this.state.artist
+      },
+      success: (data) => {
+        console.log('dataaaaaa', data[0].albums);
+        this.setState({
+          albums: data[0].albums
+        })
+      },
+      error: (err) => {
+        console.log('err', err);
+      }
+    });
   }
 
   handleChange(e) {
@@ -54,7 +58,7 @@ class App extends React.Component {
     return (<div>
       <h1>Your Favorite Songs</h1>
       <Search handleChange={this.handleChange} />
-      <List />
+      <List artist={this.state.artist} albums={this.state.albums} />
     </div>)
   }
 }
