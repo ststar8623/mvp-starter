@@ -9,62 +9,93 @@ class App extends React.Component {
     super(props);
     this.state = { 
       albums: [],
+      artists: [],
       artist: ''
     };
     this.search = this.search.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.updateChange = this.updateChange.bind(this);
   }
 
   componentDidMount() {
-    this.updateArtist();
+    let that = this;
+    $.ajax({
+      url: '/database',
+      method: 'GET',
+      success: (data) => {
+        console.log(data);
+        let artists = this.state.artists;
+        data.forEach(artist => {
+          artists.push(artist.artist.name);
+        });
+        this.setState({
+          artists: artists
+        });
+      }
+    })
   }
 
-  updateArtist() {
+  handleChange(e) {
+    this.setState({
+      artist: e.target.value
+    });
+  }
+
+  updateChange(e) {
+    e.preventDefault();
+    let that = this;
     $.ajax({
-      url: '/database', 
+      url: '/database',
+      method: 'GET',
+      data: {
+        artist: e.target.innerText
+      },
+      success: (data) => {
+        console.log("updateChange: ", data);
+        that.setState({
+          albums: data[0].artist.albums
+        })
+      }
+    })
+  }
+
+  search() {
+    let that = this;
+    $.ajax({
+      url: '/search',
       method: 'GET',
       data: {
         artist: this.state.artist
       },
       success: (data) => {
-        console.log('dataaaaaa', data);
-        this.setState({
-          albums: data[0].artist.albums,
-          artist: data[0].artist.name
-        })
+        console.log(' successful sent!!');
+        let newArtist = this.state.artists;
+        console.log(data);
+        console.log(data[0]);
+        console.log(data[0].artist);
+        if (newArtist.includes(data[0].artist.name)) {
+          that.setState({
+            albums: data[0].artist.ablums
+          });
+        } else {
+          newArtist.push(data[0].artist.name);
+          that.setState({
+            albums: data[0].artist.albums,
+            artists: newArtist
+          });
+        }
       },
       error: (err) => {
         console.log('err', err);
       }
     });
   }
-
-  handleChange(e) {
-    this.setState({
-      artist: e
-    });
-    this.updateArtist();
-    this.search(e);
-  }
-
-  search(e) {
-    $.ajax({
-      url: '/search',
-      method: 'POST',
-      data: {
-        artist: e
-      },
-      success: (data) => {
-        console.log(data + ' successful sent!!');
-      }
-    })
-  }
   
   render () {
     return (<div>
       <h1>Your Favorite Songs</h1>
-      <Search handleChange={this.handleChange} />
-      <List artist={this.state.artist} albums={this.state.albums} />
+      <Search handleChange={this.handleChange} search={this.search} />
+      <List artists={this.state.artists} albums={this.state.albums} updateChange={this.updateChange}/>
     </div>)
   }
 }

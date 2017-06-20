@@ -22,13 +22,14 @@ Once the project moves into development, the press release can be used as a touc
 
 ## Sub-Heading ##
   > Describe who the market for the product is and what benefit they get. One sentence only underneath the title.
-  User will be able to search by Artists and most hittest songs will be display on screen.
+  A simple music app for anyone.
 
 ## Summary ##
   > Give a summary of the product and the benefit. Assume the reader will not read anything else so make this paragraph good.
+  User will be able to search by artist, tracks and albums, and the most hittest songs will be display on screen.
 
 ## Problem ##
-  > Describe the problem your product solves.
+  > Describe the problem your product solves. 
 
 ## Solution ##
   > Describe how your product elegantly solves the problem.

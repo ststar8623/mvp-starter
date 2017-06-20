@@ -2,7 +2,11 @@ import React from 'react';
 
 const List = (props) => (
   <div>
-    <h2>{props.artist}</h2>
+    {
+      props.artists.map(artist => {
+        return <h4 key={artist}><a href="" onClick={props.updateChange}>{artist}</a><input type="button" value="delete"></input></h4>
+      })
+    }
     <ul>
       {
         props.albums.map(album => {
