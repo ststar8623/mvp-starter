@@ -11,15 +11,25 @@ db.once('open', function() {
   console.log('mongoose connected successfully');
 });
 
-var itemSchema = mongoose.Schema({
-  quantity: Number,
-  description: String
+var artistSchema = mongoose.Schema({
+  artist: {
+    name: {
+      type: String,
+      unique: true
+    },
+    albums: [
+      {
+        song: String,
+        url: String
+      }
+    ]
+  }
 });
 
-var Item = mongoose.model('Item', itemSchema);
+var dbs = mongoose.model('artist', artistSchema);
 
 var selectAll = function(callback) {
-  Item.find({}, function(err, items) {
+  dbs.find({}, function(err, items) {
     if(err) {
       callback(err, null);
     } else {
@@ -29,3 +39,4 @@ var selectAll = function(callback) {
 };
 
 module.exports.selectAll = selectAll;
+module.exports = dbs;

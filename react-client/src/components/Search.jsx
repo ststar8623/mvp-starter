@@ -9,7 +9,6 @@ class Search extends React.Component {
   };
 
   handleChange(e) {
-    console.log('search side', e.target.value);
     this.setState({
       artist: e.target.value
     });

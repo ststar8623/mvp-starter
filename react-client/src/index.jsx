@@ -11,37 +11,39 @@ class App extends React.Component {
       items: [],
       artist: ''
     };
-
     this.search = this.search.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    $.ajax({
-      url: '/items', 
-      method: 'GET',
-      success: (data) => {
-        this.setState({
-          items: data
-        })
-      },
-      error: (err) => {
-        console.log('err', err);
-      }
-    });
+    // $.ajax({
+    //   url: '/items', 
+    //   method: 'GET',
+    //   success: (data) => {
+    //     this.setState({
+    //       items: data
+    //     })
+    //   },
+    //   error: (err) => {
+    //     console.log('err', err);
+    //   }
+    // });
   }
 
   handleChange(e) {
-    console.log('name: ', e)
     this.setState({
       artist: e
     });
+    this.search(e);
   }
 
-  search() {
+  search(e) {
     $.ajax({
-      url: '',
+      url: '/search',
       method: 'POST',
+      data: {
+        artist: e
+      },
       success: (data) => {
         console.log(data + ' successful sent!!');
       }
