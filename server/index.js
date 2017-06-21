@@ -24,8 +24,7 @@ app.get('/search', function(req, res) {
       if (err) {
         reject(err);
       } else {
-        console.log(data);
-        return resolve(data);
+        resolve(data);
       }
     });
   });
@@ -63,7 +62,7 @@ app.post('/remove', function(req, res) {
     if (err) {
       res.sendStatus(500);
     } else {
-      res.send('Artist has been removed from the database');
+      res.send(`${artistName} has been removed from the database`);
     }
   });
 });

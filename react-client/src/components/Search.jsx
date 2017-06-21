@@ -9,7 +9,7 @@ class Search extends React.Component {
     return (
       <div>
         <input onChange={this.props.handleChange} ></input>
-        <input type="submit" onClick={this.props.search} ></input>
+        <input type="submit" value="Add" onClick={this.props.search} ></input>
       </div>
     )
   }

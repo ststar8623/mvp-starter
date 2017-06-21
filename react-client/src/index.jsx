@@ -98,16 +98,6 @@ class App extends React.Component {
             artists: newArray
           });
         }
-        // if (that.state.artists.includes(data.artist.name)) {
-        //   that.setState({
-        //     albums: data.artist.ablums
-        //   });
-        // } else {
-        //   that.setState({
-        //     albums: data.artist.albums,
-        //     artists: that.state.artists.push(data.artist.name)
-        //   });
-        // }
       },
       error: (err) => {
         console.log('err', err);
@@ -117,7 +107,7 @@ class App extends React.Component {
   
   render () {
     return (<div>
-      <h1>Your Favorite Artists</h1>
+      <h1>Your Favorite Spotifies</h1>
       <Search handleChange={this.handleChange} search={this.search} />
       <List artists={this.state.artists} albums={this.state.albums} updateChange={this.updateChange} removeChange={this.removeChange}/>
     </div>)
